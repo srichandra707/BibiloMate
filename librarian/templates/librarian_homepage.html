@@ -1,0 +1,262 @@
+{% extends "layout.html" %}
+{% block body %}
+<title>Librarian Homepage</title>
+    <style>
+        /* Basic CSS for layout */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile {
+            margin-bottom: 20px;
+        }
+        .profile .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .logout {
+            float: right;
+        }
+        .Borrowed_book .button {
+            postition: relative;
+            float:none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .books {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        .books h2 {
+            margin-bottom: 10px;
+        }
+        .book {
+            display: inline-block;
+            width: 200px;
+            text-align: center;
+            margin: 10px;
+        }
+       
+        .book p {
+            margin-top: 5px;
+        }
+        table {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: auto;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        td:nth-child(1) { /* Targeting the third column (Times Borrowed) */
+    width: 35%; /* Half the size of the Times Borrowed column */
+}
+td:nth-child(2) { /* Targeting the third column (Times Borrowed) */
+    width: 30%; /* Half the size of the Times Borrowed column */
+}
+        td:nth-child(3) { /* Targeting the third column (Times Borrowed) */
+    width: 20%; /* Half the size of the Times Borrowed column */
+}
+/* Make table scrollable */
+tbody {
+    display: block;
+    max-height: 190px; /* Adjust height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+thead {
+    width: calc(100% - 3px); /* Adjusted to account for scrollbar width */
+    overflow-y: hidden; /* Hide the vertical scrollbar in the header */
+}
+.flash-messages {
+            position: fixed;
+            top: 10px; /* Adjust the top spacing as needed */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%);
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 1px;
+            z-index: 1000;
+            text-align: center;
+        }
+.order {
+        width: 300px; /* Adjust width as needed */
+        padding: 20px;
+        align-self: flex;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        margin-right: 20px; /* Optional: Adding margin for spacing */
+    }
+    .order h2 {
+        margin-bottom: 20px;
+        font-size: 1.2em; /* Optional: Adjusting heading size */
+    }
+    .order form {
+        display: flex;
+        flex-direction: column;
+    }
+    .order label {
+        margin-bottom: 15px;
+        width: 200px; /* Optional: Fixed width for labels */
+    }
+    .order input[type="text"],
+    .order input[type="number"] {
+        padding: 2px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 1px;
+        box-sizing: border-box;
+        flex: 1; /* Grow to fill available space */
+    }
+    .order .button {
+        background-color: #4CAF50;
+        width: 150px;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        align-self: center; /* Align button to start of container */
+    }
+    .order .button:hover {
+        background-color: #45a049;
+    }
+
+
+    </style>
+</head>
+<body>
+    <div class="content">
+        <!-- Flash messages container -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=false) %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+    <script>
+        // Automatically remove flash messages after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            var messages = document.getElementsByClassName('flash-message');
+            for (var i = 0; i < messages.length; i++) {
+                (function(message) {
+                    setTimeout(function() {
+                        message.style.display = 'none';
+                    }, 3000); // 3000 milliseconds = 3 seconds
+                })(messages[i]);
+            }
+        });
+    </script>
+
+    <div class="container">
+        <h1>Welcome, {{librarian[1]}}</h1>
+        
+        <!-- Logout Button -->
+        <div class="logout">
+            <a href="{{ url_for('home') }}" class="button">Logout</a>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile">
+            <a href="{{ url_for('librarian.edit_librarian_profile', librarian_id=librarian_id) }}" class="button">Edit Profile</a>
+        </div>
+
+         <!-- View Borrowed Book Section -->
+         <div class="Borrowed_book">
+            <a href="{{ url_for('librarian.View_borrowed_books_home', librarian_id=librarian_id) }}" class="button">View Borrowed Books</a>
+        </div>
+
+  <!-- Browse Books Section -->
+  <div class="books">
+    <h2>Browse Books</h2>
+    <div class="table-container"></div>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Copies Available</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book[0] }}</td>
+                <td>{{ book[1] }}</td>
+                <td>{{ book[2] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+        <!-- Place Order Section -->
+        <div class="order">
+            <h2>Place Order for a Book</h2>
+            <form action="#" method="post">
+                <div style="display: flex; justify-content: space-between;">
+                    <label for="bookTitle">Book Title:</label>
+                    <input type="text" id="bookTitle" name="bookTitle" required>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between;">
+                    <label for="author">Author:</label>
+                    <input type="text" id="author" name="author" required>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between;">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" min="1" required>
+                </div>
+                
+                <input type="submit" value="Place Order" class="button">
+            </form>
+        </div>
+    </div>
+</body>
+{% endblock %}
